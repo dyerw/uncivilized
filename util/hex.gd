@@ -76,3 +76,10 @@ func test_get_hex_ring():
 static func hex_distance(h1: Vector2i, h2: Vector2i) -> int:
 	var vec = offset_to_cube(h1) - offset_to_cube(h2)
 	return (abs(vec.x) + abs(vec.y) + abs(vec.z)) / 2
+
+static func hex_to_pixel_center(pos: Vector2i, hex_width_px: int, hex_height_px: int) -> Vector2i:
+	var cube_coords = offset_to_cube(pos)
+	var size = hex_width_px / 2
+	var x = size * (2 * cube_coords.x + cube_coords.y)
+	var y = size * (1.5 * cube_coords.y)
+	return Vector2(x, y)

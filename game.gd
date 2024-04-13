@@ -2,9 +2,9 @@ extends Node2D
 
 const MAP_SIZE = 100
 
-@onready var tile_map: TileMap = $TileMap
 @onready var time_label: Label = $Control/PanelContainer/TimeLabel
 @onready var rng = RandomNumberGenerator.new()
+@onready var map_node: Node2D = $Map
 
 var wheat_resource_scn = preload("res://wheat_resource.tscn")
 var fauna_buffalo_scn = preload("res://fauna_buffalo.tscn")
@@ -29,14 +29,21 @@ func _ready():
 	spawn_buffalo(Vector2i(2,2))
 	spawn_buffalo(Vector2i(3,4))
 	
-	var height_map = TerrainGen.generate_topography(MAP_SIZE, 2, 10)
-	print(highest_elevation)
+	#var height_map = TerrainGen.generate_topography(MAP_SIZE, 2, 10)
+	#print(highest_elevation)
+	#
+	#var plate_map = TerrainGen.generate_tectonic_plates(MAP_SIZE, 6)
+	#for x in range(MAP_SIZE):
+		#for y in range(MAP_SIZE):
+			#add_tectonic_plates_hexagon_overlay(Vector2i(x, y), plate_map[x][y])
 	
-	var plate_map = TerrainGen.generate_tectonic_plates(MAP_SIZE, 6)
-	for x in range(MAP_SIZE):
-		for y in range(MAP_SIZE):
-			add_tectonic_plates_hexagon_overlay(Vector2i(x, y), plate_map[x][y])
+	var height_map = TerrainGen.generate_noise_height_map(MAP_SIZE)
+	highest_elevation = TerrainGen.get_max_height_from_height_map(height_map)
+	var tiles = TerrainGen.derive_tile_from_height_map(height_map)
 	
+	map_node.draw_tiles(tiles)
+	
+	#print(highest_elevation)
 	#for x in range(MAP_SIZE):
 		#for y in range(MAP_SIZE):
 			#add_height_hexagon_overlay(Vector2i(x, y), height_map[x][y])
@@ -59,14 +66,10 @@ func update_time_label():
 func spawn_wheat(pos: Vector2i):
 	var wheat = wheat_resource_scn.instantiate()
 	wheat_nodes.append(wheat)
-	tile_map.add_child(wheat)
-	wheat.position = tile_map.map_to_local(pos)
 
 func spawn_buffalo(pos: Vector2i):
 	var buffalo = fauna_buffalo_scn.instantiate()
 	buffalo_nodes.append(buffalo)
-	tile_map.add_child(buffalo)
-	buffalo.position = tile_map.map_to_local(pos)
 
 func tick_time():
 	day = (day + 1) % 90
@@ -74,12 +77,7 @@ func tick_time():
 		season = (season + 1) % 3
 
 func tick_fauna():
-	for b in buffalo_nodes:
-		if rng.randi_range(0, 1) == 0:
-			var curr_coords = tile_map.local_to_map(b.position)
-			var neighbors: Array[Vector2i] = HexUtil.get_neighbors(curr_coords)
-			var new_coord = neighbors[rng.randi_range(0, neighbors.size() - 1)]
-			b.position = tile_map.map_to_local(new_coord)
+	pass
 
 func tick_flora():
 	for w in wheat_nodes:
@@ -108,15 +106,15 @@ func add_height_hexagon_overlay(pos: Vector2i, height: int):
 	var color_weight = float(height) / float(highest_elevation)
 	var color = Color.GREEN_YELLOW.lerp(Color.RED, color_weight)
 	if height < 10:
-		color = Color.DARK_CYAN
-	elif height < 20:
 		color = Color.AQUA
+	if height < 7:
+		color = Color.DARK_CYAN
 	draw_hexagon(pos, color)
 
 
 func draw_hexagon(pos: Vector2i, color: Color):
 	var polygon_points = PackedVector2Array()
-	var center = tile_map.map_to_local(pos)
+	var center = Vector2i(0, 0) # tile_map.map_to_local(pos)
 	for i in range(6):
 		var translation = Vector2(0, 32).rotated(deg_to_rad(60) * i)
 		polygon_points.append(translation)
