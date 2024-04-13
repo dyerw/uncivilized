@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://i6u2g2g0uguw"]
+
+[ext_resource type="Texture2D" uid="uid://7tviqgmc0nm6" path="res://assets/buffalo.png" id="1_gcohu"]
+
+[node name="fauna_buffalo" type="Sprite2D"]
+scale = Vector2(0.08, 0.08)
+texture = ExtResource("1_gcohu")

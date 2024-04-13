@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://dno5ds0xg2tor"]
+
+[ext_resource type="Texture2D" uid="uid://buvvuih85mkcr" path="res://assets/wheat.png" id="1_8f3lc"]
+[ext_resource type="Script" path="res://wheat_resource.gd" id="2_4xln3"]
+
+[node name="WheatIcon" type="Sprite2D"]
+scale = Vector2(0.08, 0.08)
+texture = ExtResource("1_8f3lc")
+script = ExtResource("2_4xln3")
