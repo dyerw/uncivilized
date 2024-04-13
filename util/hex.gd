@@ -73,3 +73,6 @@ func test_get_hex_ring():
 	]
 	assert(actual == expected, "%s == %s" % [actual, expected])
 
+static func hex_distance(h1: Vector2i, h2: Vector2i) -> int:
+	var vec = offset_to_cube(h1) - offset_to_cube(h2)
+	return (abs(vec.x) + abs(vec.y) + abs(vec.z)) / 2

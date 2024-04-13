@@ -1,6 +1,6 @@
 extends TileMap
 
-const MAP_SIZE = 200
+const MAP_SIZE = 100
 const MAP_LAYER = 0
 const MAP_TILE_SET_SOURCE_ID = 0
 

@@ -1,6 +1,6 @@
 extends Node2D
 
-const MAP_SIZE = 200
+const MAP_SIZE = 100
 
 @onready var tile_map: TileMap = $TileMap
 @onready var time_label: Label = $Control/PanelContainer/TimeLabel
@@ -32,9 +32,14 @@ func _ready():
 	var height_map = TerrainGen.generate_topography(MAP_SIZE, 2, 10)
 	print(highest_elevation)
 	
+	var plate_map = TerrainGen.generate_tectonic_plates(MAP_SIZE, 6)
 	for x in range(MAP_SIZE):
 		for y in range(MAP_SIZE):
-			add_height_hexagon_overlay(Vector2i(x, y), height_map[x][y])
+			add_tectonic_plates_hexagon_overlay(Vector2i(x, y), plate_map[x][y])
+	
+	#for x in range(MAP_SIZE):
+		#for y in range(MAP_SIZE):
+			#add_height_hexagon_overlay(Vector2i(x, y), height_map[x][y])
 
 const MIN_PEAK_HEIGHT: int = 7
 const MAX_PEAK_HEIGHT: int = 15
@@ -86,7 +91,30 @@ func _on_tick_timer_timeout():
 	tick_fauna()
 	#tick_flora()
 
+const PLATE_COLORS = [
+	Color.AQUAMARINE,
+	Color.BROWN,
+	Color.CHARTREUSE,
+	Color.CORNFLOWER_BLUE,
+	Color.DARK_GOLDENROD,
+	Color.DARK_TURQUOISE,
+	Color.DARK_SLATE_BLUE
+]
+
+func add_tectonic_plates_hexagon_overlay(pos: Vector2i, plate_idx: int):
+	draw_hexagon(pos, PLATE_COLORS[plate_idx])
+
 func add_height_hexagon_overlay(pos: Vector2i, height: int):
+	var color_weight = float(height) / float(highest_elevation)
+	var color = Color.GREEN_YELLOW.lerp(Color.RED, color_weight)
+	if height < 10:
+		color = Color.DARK_CYAN
+	elif height < 20:
+		color = Color.AQUA
+	draw_hexagon(pos, color)
+
+
+func draw_hexagon(pos: Vector2i, color: Color):
 	var polygon_points = PackedVector2Array()
 	var center = tile_map.map_to_local(pos)
 	for i in range(6):
@@ -94,11 +122,6 @@ func add_height_hexagon_overlay(pos: Vector2i, height: int):
 		polygon_points.append(translation)
 	var polygon_node = Polygon2D.new()
 	polygon_node.polygon = polygon_points
-	var color_weight = float(height) / float(highest_elevation)
-	polygon_node.color = Color.GREEN_YELLOW.lerp(Color.RED, color_weight)
-	if height < 10:
-		polygon_node.color = Color.DARK_CYAN
-	elif height < 20:
-		polygon_node.color = Color.AQUA
+	polygon_node.color = color
 	add_child(polygon_node)
 	polygon_node.position = center

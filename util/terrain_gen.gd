@@ -64,3 +64,32 @@ static func get_wandering_hex_path(direction: int, map_size: int):
 			current_direction = x
 			current_hex = HexUtil.hex_in_direction(current_hex, x, 1)
 	return path
+
+# "Tectonic plates" are Voronoi polygons basically
+static func generate_tectonic_plates(map_size: int, num_plates: int):
+	var rng = RandomNumberGenerator.new()
+	
+	var plate_map = []
+	for x in range(map_size):
+		plate_map.append([])
+		for y in range(map_size):
+			plate_map[x].append(99)
+	
+	var plate_centers: Array[Vector2i] = []
+	for i in range(num_plates):
+		var x = rng.randi_range(0, map_size)
+		var y = rng.randi_range(0, map_size)
+		plate_centers.append(Vector2i(x, y))
+
+	for x in range(map_size):
+		for y in range(map_size):
+			var min_distance = 9999999
+			var plate_idx = 99
+			for i in range(num_plates):
+				var plate_center = plate_centers[i]
+				var distance = HexUtil.hex_distance(Vector2i(x, y), plate_center)
+				if distance < min_distance:
+					min_distance = distance
+					plate_idx = i
+			plate_map[x][y] = plate_idx
+	return plate_map
