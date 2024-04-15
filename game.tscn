@@ -1,14 +1,69 @@
-[gd_scene load_steps=4 format=3 uid="uid://bi53x1pbjsfsy"]
+[gd_scene load_steps=7 format=3 uid="uid://bi53x1pbjsfsy"]
 
 [ext_resource type="Script" path="res://game.gd" id="1_c2drs"]
-[ext_resource type="Script" path="res://Map.gd" id="2_iktrd"]
+[ext_resource type="Script" path="res://ui/Map.gd" id="2_iktrd"]
+[ext_resource type="Script" path="res://ui/FloraLayer.gd" id="3_om321"]
 [ext_resource type="Script" path="res://Camera2D.gd" id="4_gpntf"]
+[ext_resource type="Script" path="res://ui/UnitLayer.gd" id="4_pq7kf"]
+[ext_resource type="Script" path="res://InputHandler.gd" id="6_o00iy"]
 
-[node name="Root" type="Node2D"]
+[node name="Root" type="Node2D" node_paths=PackedStringArray("time_label", "pop_label", "starvation_level_label")]
 script = ExtResource("1_c2drs")
+time_label = NodePath("UI/PanelContainer/MarginContainer/HBoxContainer/TimeLabel")
+pop_label = NodePath("UI/PanelContainer/MarginContainer/HBoxContainer/PopContainer/PopLabel")
+starvation_level_label = NodePath("UI/PanelContainer/MarginContainer/HBoxContainer/StarvationLevelContainer/StarvationLevelLabel")
 
 [node name="Map" type="Node2D" parent="."]
 script = ExtResource("2_iktrd")
+
+[node name="FloraLayer" type="Node2D" parent="."]
+z_index = 1000
+script = ExtResource("3_om321")
+
+[node name="UnitLayer" type="Node2D" parent="."]
+z_index = 2000
+script = ExtResource("4_pq7kf")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="PanelContainer" type="PanelContainer" parent="UI"]
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="TimeLabel" type="Label" parent="UI/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Spring 0"
+
+[node name="PopContainer" type="HBoxContainer" parent="UI/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="PopTextLabel" type="Label" parent="UI/PanelContainer/MarginContainer/HBoxContainer/PopContainer"]
+layout_mode = 2
+text = "Pop:"
+
+[node name="PopLabel" type="Label" parent="UI/PanelContainer/MarginContainer/HBoxContainer/PopContainer"]
+layout_mode = 2
+
+[node name="StarvationLevelContainer" type="HBoxContainer" parent="UI/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="StarvationLevelTextLabel" type="Label" parent="UI/PanelContainer/MarginContainer/HBoxContainer/StarvationLevelContainer"]
+layout_mode = 2
+text = "Starvation: "
+
+[node name="StarvationLevelLabel" type="Label" parent="UI/PanelContainer/MarginContainer/HBoxContainer/StarvationLevelContainer"]
+layout_mode = 2
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(2, -3)
@@ -17,20 +72,7 @@ script = ExtResource("4_gpntf")
 [node name="TickTimer" type="Timer" parent="."]
 autostart = true
 
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="PanelContainer" type="PanelContainer" parent="Control"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="TimeLabel" type="Label" parent="Control/PanelContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "FOOO"
+[node name="InputHandler" type="Node" parent="."]
+script = ExtResource("6_o00iy")
 
 [connection signal="timeout" from="TickTimer" to="." method="_on_tick_timer_timeout"]
