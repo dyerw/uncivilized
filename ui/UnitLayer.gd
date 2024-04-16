@@ -7,5 +7,5 @@ func draw_polity(polity: Polity):
 	add_child(sprite)
 	sprite.texture = huts_texture
 	sprite.scale = Vector2(0.2, 0.2)
-	sprite.position = HexUtil.hex_to_pixel_center(polity.position, 256, 256)
+	sprite.position = HexUtil.hex_to_pixel_center(polity.position)
 	sprite.centered = true

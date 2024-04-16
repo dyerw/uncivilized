@@ -48,7 +48,7 @@ func draw_hex(offset_coord: Vector2i, tile: TerrainGen.Tile):
 	sprite.texture = texture_for_tile(tile)
 	add_child(sprite)
 	sprite.z_index = offset_coord.y
-	sprite.position = HexUtil.hex_to_pixel_center(offset_coord, 256, 256)
+	sprite.position = HexUtil.hex_to_pixel_center(offset_coord)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

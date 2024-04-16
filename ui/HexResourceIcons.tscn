@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dk7bmaprqn0g7"]
+
+[ext_resource type="Script" path="res://ui/HexResourceIcons.gd" id="1_b6wg4"]
+
+[node name="HexResourceIcons" type="Node2D"]
+script = ExtResource("1_b6wg4")
+
+[node name="ResourceIconRowContainer" type="HBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0

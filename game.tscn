@@ -2,13 +2,14 @@
 
 [ext_resource type="Script" path="res://game.gd" id="1_c2drs"]
 [ext_resource type="Script" path="res://ui/Map.gd" id="2_iktrd"]
-[ext_resource type="Script" path="res://ui/FloraLayer.gd" id="3_om321"]
+[ext_resource type="Script" path="res://ui/ResourceLayer.gd" id="3_x7wi7"]
 [ext_resource type="Script" path="res://Camera2D.gd" id="4_gpntf"]
 [ext_resource type="Script" path="res://ui/UnitLayer.gd" id="4_pq7kf"]
 [ext_resource type="Script" path="res://InputHandler.gd" id="6_o00iy"]
 
-[node name="Root" type="Node2D" node_paths=PackedStringArray("time_label", "pop_label", "starvation_level_label")]
+[node name="Root" type="Node2D" node_paths=PackedStringArray("resource_layer", "time_label", "pop_label", "starvation_level_label")]
 script = ExtResource("1_c2drs")
+resource_layer = NodePath("ResourceLayer")
 time_label = NodePath("UI/PanelContainer/MarginContainer/HBoxContainer/TimeLabel")
 pop_label = NodePath("UI/PanelContainer/MarginContainer/HBoxContainer/PopContainer/PopLabel")
 starvation_level_label = NodePath("UI/PanelContainer/MarginContainer/HBoxContainer/StarvationLevelContainer/StarvationLevelLabel")
@@ -16,9 +17,9 @@ starvation_level_label = NodePath("UI/PanelContainer/MarginContainer/HBoxContain
 [node name="Map" type="Node2D" parent="."]
 script = ExtResource("2_iktrd")
 
-[node name="FloraLayer" type="Node2D" parent="."]
+[node name="ResourceLayer" type="Node2D" parent="."]
 z_index = 1000
-script = ExtResource("3_om321")
+script = ExtResource("3_x7wi7")
 
 [node name="UnitLayer" type="Node2D" parent="."]
 z_index = 2000

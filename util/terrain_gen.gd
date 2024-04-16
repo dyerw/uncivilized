@@ -108,6 +108,9 @@ enum Tile {
 	ROCKY
 }
 
+static func is_water(tile: Tile) -> bool:
+	return tile == Tile.DEEP_WATER or tile == Tile.SHALLOW_WATER
+
 static func derive_tile_from_height_map(height_map: Array):
 	var tiles = filled_2d_array(height_map.size(), 0)
 	for x in range(height_map.size()):
