@@ -22,7 +22,6 @@ func generate_area():
 	#highest_elevation = TerrainGen.get_max_height_from_height_map(height_map)
 	tiles = TerrainGen.derive_tile_from_height_map(height_map)
 	spawn_resources()
-	print(resource_locations)
 
 func spawn_resources():
 	for x in range(size):
@@ -32,6 +31,9 @@ func spawn_resources():
 				# is this x, y location able to spawn this resource?
 				# defaults to true unless some constraint says otherwise
 				var tile_is_spawnable = true
+				
+				if resource_id == "fish" and TerrainGen.is_water(tiles[x][y]):
+					pass
 				
 				if GameConfig.resource_has_key(resource_id, GameConfig.MAXIMUM_ELEVATION):
 					var maximum_elevation = GameConfig.get_resource_value(resource_id, GameConfig.MAXIMUM_ELEVATION)
@@ -53,6 +55,20 @@ func spawn_resources():
 							resource_locations[resource_id] = [pos]
 						else:
 							resource_locations[resource_id].append(pos)
+
+# returns resource id -> num in range
+# FIXME: This is not efficient like at all
+func resources_in_range(pos: Vector2i, r: int) -> Dictionary:
+	var result = {}
+	for hex in HexUtil.all_hexes_within(pos, r):
+		for resource_id in resource_locations.keys():
+			for p in resource_locations[resource_id]:
+				if p == hex:
+					if result.has(resource_id):
+						result[resource_id] += 1
+					else:
+						result[resource_id] = 1
+	return result
 
 func maximum_elevation_spawn_constraint_met(pos: Vector2i, value: int):
 	var elevation = height_map[pos.x][pos.y]

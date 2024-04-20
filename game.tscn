@@ -1,18 +1,19 @@
-[gd_scene load_steps=7 format=3 uid="uid://bi53x1pbjsfsy"]
+[gd_scene load_steps=8 format=3 uid="uid://bi53x1pbjsfsy"]
 
 [ext_resource type="Script" path="res://game.gd" id="1_c2drs"]
 [ext_resource type="Script" path="res://ui/Map.gd" id="2_iktrd"]
 [ext_resource type="Script" path="res://ui/ResourceLayer.gd" id="3_x7wi7"]
 [ext_resource type="Script" path="res://Camera2D.gd" id="4_gpntf"]
 [ext_resource type="Script" path="res://ui/UnitLayer.gd" id="4_pq7kf"]
+[ext_resource type="Script" path="res://ui/UIController.gd" id="5_lfki4"]
 [ext_resource type="Script" path="res://InputHandler.gd" id="6_o00iy"]
 
 [node name="Root" type="Node2D" node_paths=PackedStringArray("resource_layer", "time_label", "pop_label", "starvation_level_label")]
 script = ExtResource("1_c2drs")
 resource_layer = NodePath("ResourceLayer")
-time_label = NodePath("UI/PanelContainer/MarginContainer/HBoxContainer/TimeLabel")
-pop_label = NodePath("UI/PanelContainer/MarginContainer/HBoxContainer/PopContainer/PopLabel")
-starvation_level_label = NodePath("UI/PanelContainer/MarginContainer/HBoxContainer/StarvationLevelContainer/StarvationLevelLabel")
+time_label = NodePath("UI/VBoxContainer/TopBarPanelContainer/MarginContainer/HBoxContainer/TimeLabel")
+pop_label = NodePath("UI/VBoxContainer/TopBarPanelContainer/MarginContainer/HBoxContainer/PopContainer/PopLabel")
+starvation_level_label = NodePath("UI/VBoxContainer/TopBarPanelContainer/MarginContainer/HBoxContainer/StarvationLevelContainer/StarvationLevelLabel")
 
 [node name="Map" type="Node2D" parent="."]
 script = ExtResource("2_iktrd")
@@ -25,45 +26,84 @@ script = ExtResource("3_x7wi7")
 z_index = 2000
 script = ExtResource("4_pq7kf")
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("available_daily_labor", "labor_allocators_container")]
+script = ExtResource("5_lfki4")
+available_daily_labor = NodePath("VBoxContainer/MenuButtonsContainer/HBoxContainer/LaborAllocationVBoxContainer/HBoxContainer/AvailableDailyLaborValue")
+labor_allocators_container = NodePath("VBoxContainer/MenuButtonsContainer/HBoxContainer/LaborAllocationVBoxContainer/LaborAllocatorsContainer")
 
-[node name="PanelContainer" type="PanelContainer" parent="UI"]
-anchors_preset = 10
-anchor_right = 1.0
-grow_horizontal = 2
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/PanelContainer"]
+[node name="TopBarPanelContainer" type="PanelContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/VBoxContainer/TopBarPanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/PanelContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer/TopBarPanelContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="TimeLabel" type="Label" parent="UI/PanelContainer/MarginContainer/HBoxContainer"]
+[node name="TimeLabel" type="Label" parent="UI/VBoxContainer/TopBarPanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "Spring 0"
 
-[node name="PopContainer" type="HBoxContainer" parent="UI/PanelContainer/MarginContainer/HBoxContainer"]
+[node name="PopContainer" type="HBoxContainer" parent="UI/VBoxContainer/TopBarPanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="PopTextLabel" type="Label" parent="UI/PanelContainer/MarginContainer/HBoxContainer/PopContainer"]
+[node name="PopTextLabel" type="Label" parent="UI/VBoxContainer/TopBarPanelContainer/MarginContainer/HBoxContainer/PopContainer"]
 layout_mode = 2
 text = "Pop:"
 
-[node name="PopLabel" type="Label" parent="UI/PanelContainer/MarginContainer/HBoxContainer/PopContainer"]
+[node name="PopLabel" type="Label" parent="UI/VBoxContainer/TopBarPanelContainer/MarginContainer/HBoxContainer/PopContainer"]
 layout_mode = 2
 
-[node name="StarvationLevelContainer" type="HBoxContainer" parent="UI/PanelContainer/MarginContainer/HBoxContainer"]
+[node name="StarvationLevelContainer" type="HBoxContainer" parent="UI/VBoxContainer/TopBarPanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="StarvationLevelTextLabel" type="Label" parent="UI/PanelContainer/MarginContainer/HBoxContainer/StarvationLevelContainer"]
+[node name="StarvationLevelTextLabel" type="Label" parent="UI/VBoxContainer/TopBarPanelContainer/MarginContainer/HBoxContainer/StarvationLevelContainer"]
 layout_mode = 2
 text = "Starvation: "
 
-[node name="StarvationLevelLabel" type="Label" parent="UI/PanelContainer/MarginContainer/HBoxContainer/StarvationLevelContainer"]
+[node name="StarvationLevelLabel" type="Label" parent="UI/VBoxContainer/TopBarPanelContainer/MarginContainer/HBoxContainer/StarvationLevelContainer"]
+layout_mode = 2
+
+[node name="MenuButtonsContainer" type="PanelContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer/MenuButtonsContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/VBoxContainer/MenuButtonsContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="LaborOverviewButton" type="Button" parent="UI/VBoxContainer/MenuButtonsContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Labor"
+
+[node name="StockpileButton" type="Button" parent="UI/VBoxContainer/MenuButtonsContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Stockpile"
+
+[node name="LaborAllocationVBoxContainer" type="VBoxContainer" parent="UI/VBoxContainer/MenuButtonsContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer/MenuButtonsContainer/HBoxContainer/LaborAllocationVBoxContainer"]
+layout_mode = 2
+
+[node name="AvailableDailyLaborLabel" type="Label" parent="UI/VBoxContainer/MenuButtonsContainer/HBoxContainer/LaborAllocationVBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Available Daily Labor: "
+
+[node name="AvailableDailyLaborValue" type="Label" parent="UI/VBoxContainer/MenuButtonsContainer/HBoxContainer/LaborAllocationVBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "0"
+
+[node name="LaborAllocatorsContainer" type="VBoxContainer" parent="UI/VBoxContainer/MenuButtonsContainer/HBoxContainer/LaborAllocationVBoxContainer"]
 layout_mode = 2
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -76,4 +116,5 @@ autostart = true
 [node name="InputHandler" type="Node" parent="."]
 script = ExtResource("6_o00iy")
 
+[connection signal="pressed" from="UI/VBoxContainer/MenuButtonsContainer/HBoxContainer/VBoxContainer/LaborOverviewButton" to="UI" method="_on_labor_overview_button_pressed"]
 [connection signal="timeout" from="TickTimer" to="." method="_on_tick_timer_timeout"]

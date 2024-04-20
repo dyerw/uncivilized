@@ -67,9 +67,6 @@ static func all_hexes_within(pos: Vector2i, radius: int) -> Array[Vector2i]:
 		return [pos]
 	var coords: Array[Vector2i] = []
 	for r in range(radius):
-		print(pos)
-		print(r)
-		print(get_hex_ring(pos, r + 1))
 		coords.append_array(get_hex_ring(pos, r + 1))
 	return coords
 

@@ -5,6 +5,10 @@ const HEX_WIDTH: int = 256
 
 var resources = {}
 
+@onready var tasks_config = ConfigFile.new()
+@onready var materials_config = ConfigFile.new()
+
+
 # Resource Config Keys
 const MAXIMUM_ELEVATION = "maximum_elevation"
 const OCCURENCE = "occurence"
@@ -14,6 +18,26 @@ const MAXIMUM_LAND_DISTANCE = "maximum_land_distance"
 const ICON_PATH = "icon_path"
 
 func _ready():
+	# TODO: This sucks, probably get this all into classes in mem
+	load_resources_config()
+	materials_config.load("res://data/materials.cfg")
+	tasks_config.load("res://data/tasks.cfg")
+
+func all_task_ids() -> PackedStringArray:
+	return tasks_config.get_sections()
+
+func get_task_required_resource(task_id: String) -> String:
+	var required_resource = tasks_config.get_value(task_id, "required_resource")
+	return required_resource
+
+func get_task_maximum_labor_per_resource(task_id: String) -> int:
+	var maximum_labor_per_resource = tasks_config.get_value(task_id, "maximum_labor_per_resource")
+	return maximum_labor_per_resource
+
+func get_task_display_name(task_id: String) -> String:
+	return tasks_config.get_value(task_id, "display_name")
+
+func load_resources_config():
 	var resources_config = ConfigFile.new()
 	var err = resources_config.load("res://data/resources.cfg")
 	if err != OK:

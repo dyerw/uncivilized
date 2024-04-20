@@ -23,15 +23,18 @@ var day = 0
 # Polity state
 var player_polity: Polity = null
 
+@onready var world: World = World.new(MAP_SIZE)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var world = World.new(MAP_SIZE)
 	world.generate_area()
 	map_node.draw_tiles(world.tiles)
 	resource_layer.draw_resource_icons(world.resource_locations)
 	
 	var start_position = find_start_position(world.tiles)
 	player_polity = Polity.new(start_position)
+	
+	$UI.connect_polity_signals(player_polity)
 	
 	# Hook up UI signals
 	pop_label.text = str(player_polity.population)
@@ -67,5 +70,5 @@ func tick_time():
 func _on_tick_timer_timeout():
 	tick_time()
 	update_time_label()
-	player_polity.tick()
+	player_polity.tick(world)
 
