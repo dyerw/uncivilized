@@ -33,10 +33,6 @@ func texture_for_tile(tile: TerrainGen.Tile):
 		TerrainGen.Tile.ROCKY:
 			return mountains.pick_random()
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
 func draw_tiles(tile_map: Array):
 	var size = tile_map.size()
 	for x in range(size):
@@ -48,7 +44,8 @@ func draw_hex(offset_coord: Vector2i, tile: TerrainGen.Tile):
 	sprite.texture = texture_for_tile(tile)
 	add_child(sprite)
 	sprite.z_index = offset_coord.y
-	sprite.position = HexUtil.hex_to_pixel_center(offset_coord)
+	# TODO: Offset vector is because image assets have blank space on top
+	sprite.position = HexUtil.hex_to_pixel_center(offset_coord) - Vector2i(0, 64)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

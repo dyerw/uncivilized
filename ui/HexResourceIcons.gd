@@ -8,3 +8,6 @@ func add_resource(resource_id: String):
 	var texture = load(GameConfig.get_resource_value(resource_id, GameConfig.ICON_PATH))
 	texture_rect.texture = texture
 	texture_rect.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+
+func _draw():
+	draw_circle(Vector2(0,0), 10, Color.RED)

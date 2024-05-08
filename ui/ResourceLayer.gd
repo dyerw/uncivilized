@@ -15,7 +15,7 @@ func draw_resource_icons(resources: Dictionary):
 				add_child(resource_icon_node)
 				resource_icon_nodes[pos] = resource_icon_node
 				# FIXME: Find a better place for this offset
-				resource_icon_node.position = HexUtil.hex_to_pixel_center(pos) + Vector2i(-50, 100)
+				resource_icon_node.position = HexUtil.hex_to_pixel_center(pos)
 			else:
 				resource_icon_node = resource_icon_nodes[pos]
 			resource_icon_node.add_resource(key)

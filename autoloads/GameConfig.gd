@@ -6,7 +6,7 @@ const HEX_WIDTH: int = 256
 var resources = {}
 
 @onready var tasks_config = ConfigFile.new()
-@onready var materials_config = ConfigFile.new()
+@onready var goods_config = ConfigFile.new()
 
 
 # Resource Config Keys
@@ -20,7 +20,7 @@ const ICON_PATH = "icon_path"
 func _ready():
 	# TODO: This sucks, probably get this all into classes in mem
 	load_resources_config()
-	materials_config.load("res://data/materials.cfg")
+	goods_config.load("res://data/goods.cfg")
 	tasks_config.load("res://data/tasks.cfg")
 
 func all_task_ids() -> PackedStringArray:
@@ -36,6 +36,14 @@ func get_task_maximum_labor_per_resource(task_id: String) -> int:
 
 func get_task_display_name(task_id: String) -> String:
 	return tasks_config.get_value(task_id, "display_name")
+
+func get_task_output(task_id:String) -> Dictionary:
+	var good = tasks_config.get_value(task_id, "output")
+	var quantity = tasks_config.get_value(task_id, "output_quantity")
+	return {
+		good = good,
+		quantity = quantity
+	}
 
 func load_resources_config():
 	var resources_config = ConfigFile.new()

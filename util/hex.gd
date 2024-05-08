@@ -86,9 +86,44 @@ static func hex_distance(h1: Vector2i, h2: Vector2i) -> int:
 	var vec = offset_to_cube(h1) - offset_to_cube(h2)
 	return (abs(vec.x) + abs(vec.y) + abs(vec.z)) / 2
 
+# [ 2 1   ]
+# [ 0 3/2 ]
 static func hex_to_pixel_center(pos: Vector2i) -> Vector2i:
 	var cube_coords = offset_to_cube(pos)
 	var size = GameConfig.HEX_WIDTH / 2
 	var x = size * (2 * cube_coords.x + cube_coords.y)
 	var y = size * (1.5 * cube_coords.y)
 	return Vector2(x, y)
+
+static func cube_round(frac_cube: Vector3) -> Vector3i:
+	var q = round(frac_cube.x)
+	var r = round(frac_cube.y)
+	var s = round(frac_cube.z)
+	
+	var q_diff = abs(q - frac_cube.x)
+	var r_diff = abs(r - frac_cube.y)
+	var s_diff = abs(s - frac_cube.z)
+	
+	if q_diff > r_diff and q_diff > s_diff:
+		q = -r - s
+	elif r_diff > s_diff:
+		r = -q - s
+	else:
+		s = -q - r
+	
+	return Vector3i(q, r, s)
+
+# Invert the above matrix
+# [ 3 -2 ] x 1/6
+# [ 0  4 ] 
+# =
+# [ 1/2  -1/3 ]
+# [  0    2/3 ]
+static func pixel_to_hex(pos: Vector2) -> Vector2i:
+	var size = GameConfig.HEX_WIDTH / 2
+	var q = ((1./2) * pos.x - (1./3) * pos.y) / size
+	var r = ((2./3) * pos.y) / size
+	var s = -q - r
+	
+	var cube_coords = cube_round(Vector3(q, r, s))
+	return cube_to_offset(cube_coords)

@@ -46,21 +46,57 @@ var task_labor_allocation = {}
 var position: Vector2i
 var stockpile: Stockpile
 
+var speed_hexes_per_tick = 1./2
+
+# Empty when stationary
+var current_movement_path: Array[Vector2i] = []
+var next_hex_movement_progress: float = 0.0
+
+signal moving_to_hex(pos: Vector2i, ticks: int)
+
 func _init(start_position: Vector2i):
 	rng = RandomNumberGenerator.new()
 	position = start_position
 	stockpile = Stockpile.new()
 	available_labor = labor_per_pop_per_day * population
 
+func set_movement_path(path: Array[Vector2i]):
+	if current_movement_path.size() == 0:
+		current_movement_path = path
+		next_hex_movement_progress = 0
+		moving_to_hex.emit(path[0], 1. / speed_hexes_per_tick)
+
 func tick(world: World):
 	if population > 0:
-		# gather food first
+		# Movement
+		if current_movement_path.size() > 0:
+			print("next_hex_movement_progress: %s" % next_hex_movement_progress)
+			if next_hex_movement_progress >= 1:
+				next_hex_movement_progress = 0
+				var new_pos = current_movement_path.pop_front()
+				position = new_pos
+				print("new polity pos: %s", position)
+				if current_movement_path.size() > 0:
+					moving_to_hex.emit(current_movement_path[0], 1. / speed_hexes_per_tick)
+			else:
+				next_hex_movement_progress += speed_hexes_per_tick
+		
 		var resources_in_range = world.resources_in_range(position, 1)
 		update_available_tasks(resources_in_range)
-		print(available_tasks)
+		cap_allocated_labor_to_available_tasks()
+		
+		process_current_tasks()
+		
 		consume_food()
 		starvation_dieoff()
 
+func process_current_tasks():
+	for task_id in task_labor_allocation.keys():
+		var output = GameConfig.get_task_output(task_id)
+		var quantity = output.quantity * task_labor_allocation[task_id]
+		print("Gain %s %s" % [quantity, output.good])
+
+# FIXME: This isn't counting resources on the current tile
 func update_available_tasks(resources_in_range: Dictionary):
 	var new_available_tasks = {}
 	for task_id in GameConfig.all_task_ids():
@@ -101,8 +137,6 @@ func _on_task_allocation_changed(task_id: String, amount: int):
 	
 	var new_labor = current_labor + amount
 	var new_available_labor = available_labor - amount 
-	print(new_labor)
-	print(new_available_labor)
 	if new_labor > 0 and new_labor <= available_tasks[task_id] and new_available_labor > -1:
 		task_labor_allocation[task_id] = new_labor
 		task_labor_allocation_changed.emit(task_id, new_labor)

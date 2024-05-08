@@ -33,6 +33,7 @@ func _ready():
 	
 	var start_position = find_start_position(world.tiles)
 	player_polity = Polity.new(start_position)
+	$UnitLayer.draw_polity(player_polity)
 	
 	$UI.connect_polity_signals(player_polity)
 	
@@ -40,9 +41,12 @@ func _ready():
 	pop_label.text = str(player_polity.population)
 	player_polity.connect("pop_changed", func (value): pop_label.text = str(value))
 	player_polity.connect("starvation_level_changed", func (value): starvation_level_label.text = str(value))
+	player_polity.connect("moving_to_hex", func (pos, ticks): $UnitLayer.move_polity(pos, ticks))
 	
-	#unit_layer.draw_polity(player_polity)
+	$InputHandler.connect('player_move', _on_player_move_polity)
+	
 	camera.position = HexUtil.hex_to_pixel_center(start_position)
+	print(start_position)
 
 func find_start_position(tile_map: Array):
 	var start_pos = Vector2i(MAP_SIZE / 2, MAP_SIZE / 2)
@@ -50,6 +54,7 @@ func find_start_position(tile_map: Array):
 		start_pos = HexUtil.hex_in_direction(start_pos, rng.randi_range(0, 5), 2)
 	return start_pos
 
+# TODO: This needs to be moved over to the UI stuff
 func update_time_label():
 	var season_text = "Spring"
 	match season:
@@ -72,3 +77,10 @@ func _on_tick_timer_timeout():
 	update_time_label()
 	player_polity.tick(world)
 
+# Player Inputs
+func _on_player_move_polity(pos: Vector2i):
+	print("player request move to %s" % pos)
+	if HexUtil.hex_distance(player_polity.position, pos) > 1:
+		print("too far!")
+		return
+	player_polity.set_movement_path([pos])
